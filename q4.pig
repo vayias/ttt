@@ -23,12 +23,12 @@ state_cities_info_grouped = GROUP state_cities_info BY state_name;
 state_cities_top5 = FOREACH state_cities_info_grouped {
 	city_population = FOREACH state_cities_info GENERATE city, population;
 	city_population_ordered = ORDER city_population BY population DESC;
-	top_five = LIMIT zzz 5;
+	top_five = LIMIT city_population_ordered 5;
 	GENERATE group AS state_name, FLATTEN(top_five);
 }
 
 --Sort By state name
 state_cities_top5_ordered = ORDER state_cities_top5 BY state_name;
 
-STORE results INTO 'q4' USING PigStorage(',');
+STORE state_cities_top5_ordered INTO 'q4' USING PigStorage(',');
 
